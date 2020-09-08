@@ -20,7 +20,6 @@ class FormStepOne(forms.ModelForm):
     firstName = forms.CharField(max_length=15)
     lastName = forms.CharField(max_length=20)
     birthPlace = forms.CharField(max_length=15, required=False)
-    # birthDate = forms.DateField()
     gender = forms.TypedChoiceField(choices=GENDER_CHOICES)
     phone_number = forms.CharField(validators=[phone_regex], max_length=17, required=False)
     email = forms.EmailField(max_length=25, required=False)

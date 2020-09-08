@@ -3,9 +3,10 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 
+
+
 class UserManager(BaseUserManager):
     def create_user(self, national_code, password=None):
-        print('user manager model', national_code)
         if not national_code:
             raise ValueError('Users must have an national code')
 
@@ -49,6 +50,7 @@ class User(AbstractBaseUser):
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
     perm = models.BooleanField(default=True)
+    complete = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'national_code'
     REQUIRED_FIELDS = []
@@ -82,9 +84,12 @@ class User(AbstractBaseUser):
     def is_active(self):
         return self.active
 
+    @property
+    def is_complete(self):
+        return self.complete
 
-
-
+    def setcomplete(self, value):
+        self.complete = value
 
 
 class Information(models.Model):
