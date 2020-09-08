@@ -25,14 +25,14 @@
 
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users-logout' %}">Logout</a>
+                        <a class="nav-link" href="{% url 'users-logout' %}">خروج</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'blog-home' %}">profile</a>
                     </li>
                   {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="url 'users-login'">ورود و تکمیل اطلاعات</a>
+                        <a class="nav-link" href="{% url 'users-login' %}">ورود و تکمیل اطلاعات</a>
                     </li>
                   {% endif %}
             </ul>
