@@ -3,13 +3,11 @@
 {% block content %}
 <h1>your information</h1>
 {% if user.is_authenticated %}
-    <p>name:{{ data.firstName }} </p>
-    <p>{{ data.lastName }}</p>
-    {% if data.gender %}
-    <p>male</p>
-    {% else %}
-    <p>female</p>
-    {% endif %}
+<!--{% for item in data %}-->
+<!--    <h4>{{ item }}</h4>:<p>{{ data.item }}</p>-->
+<!--{% endfor %}-->
+
+
 {% endif %}
 
 {% endblock %}

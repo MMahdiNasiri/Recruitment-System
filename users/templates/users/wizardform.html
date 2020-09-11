@@ -20,6 +20,9 @@
   <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
   <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
   {% endif %}
+  {% if wizard.steps.next %}
+  <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.next }}">{% trans "next step" %}</button>
+  {% endif %}
   <input type="submit" value="{% trans "submit" %}"/>
 </form>
 {% endblock %}

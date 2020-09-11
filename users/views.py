@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -36,9 +37,6 @@ def logout_view(request):
 
 
 
-
-
-
 INFORMATION_WIZARD_FORMS = (
     ("FormStepOne", FormStepOne),
     ("FormStepTwo", FormStepTwo),
@@ -46,33 +44,23 @@ INFORMATION_WIZARD_FORMS = (
 )
 
 
-def usercomplete(user):
-    return user.is_complete == False
-
-
-user_login_required = user_passes_test(usercomplete, login_url='users-done')
-
-
-def complete_user_required(view_func):
-    decorated_view_func = login_required(user_login_required(view_func))
-    return decorated_view_func
-
-
-def done(request):
-    user = request.user
-    if user.is_authenticated and user.is_complete:
-        completedata = Information.objects.get(user=user)
-        return render(request, 'users/done.html', {'data':completedata})
-    else:
-        return redirect('users-information')
-
-
-
-class FormWizardView(SessionWizardView):
+class FormWizardView(UserPassesTestMixin, SessionWizardView):
     template_name = "users/wizardform.html"
     instance = None
+    redirect_field_name = 'users/done.html'
+
+    def test_func(self):
+        print('test_func')
+        user = self.request.user
+        if not user.is_complete:
+            return True
+        return False
+
+    def handle_no_permission(self):
+        return redirect("users-done")
 
     def get_form_instance(self, step):
+        print('instance')
         if self.instance is None:
             self.instance = Information(user=self.request.user)
         return self.instance
@@ -85,19 +73,24 @@ class FormWizardView(SessionWizardView):
         user.save()
         project.save()
 
-        return render(self.request, 'users/done.html', {
+        return render(self.request, 'blog/home.html', {
             'form_data': [form.cleaned_data for form in form_list],
         })
 
-    @method_decorator(complete_user_required)
-    def get(self, request, *args, **kwargs):
-        try:
-            my_form = self.get_form()
-            return self.render(my_form)
-        except KeyError:
-            return super().get(request, *args, **kwargs)
+    def get_form_initial(self, step):
+        print('get_form_initial')
+        initial = {}
+        userinformation = Information.objects.get(user=self.request.user)
+        initial.update(userinformation.__dict__)
+        return self.initial_dict.get(step, initial)
+
+
+    def process_step(self, form):
+        project = self.instance
+        project.save()
+        return self.get_form_step_data(form)
 
 
 
-
-
+def done(request):
+    return render(request, 'users/done.html', {})
