@@ -2,10 +2,85 @@
 
 {% block content %}
 <h1>your information</h1>
+<h3>your code is: {{ random }} </h3>
 {% if user.is_authenticated %}
-<!--{% for item in data %}-->
-<!--    <h4>{{ item }}</h4>:<p>{{ data.item }}</p>-->
-<!--{% endfor %}-->
+    <div class="container" dir="ltr">
+    <div class="row">
+        <div class="col-4">
+        <div class="d-flex"><h5>firstName </h5>:&nbsp;<p class="border border-secondary px-2">{{ data.firstName }}</p></div>
+        <div class="d-flex"><h4>lastName</h4>:&nbsp;<p class="border border-secondary px-2"> {{ data.lastName }}</p></div>
+        {% if data.birthPlace %}
+        <div class="d-flex"><h4>birthPlace</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.birthPlace }}</p></div>
+        {% endif %}
+        {% if data.gender is 0 %}
+        <div class="d-flex"><h4>gender</h4>:&nbsp;<p class="border border-secondary px-2">man</p></div>
+        {% else %}
+        <div class="d-flex"><h4>gender</h4>:&nbsp;<p class="border border-secondary px-2">female</p></div>
+        {% endif %}
+        {% if data.phoneNumber %}
+        <div class="d-flex"><h4>phoneNumber</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.phoneNumber }}</p></div>
+        {% endif %}
+        {% if data.email %}
+        <div class="d-flex"><h4>email</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.email }}</p></div>
+        {% endif %}
+        {% if data.province %}
+        <div class="d-flex"><h4>province</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.province }}</p></div>
+        {% endif %}
+        {% if data.city %}
+        <div class="d-flex"><h4>city</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.city }}</p></div>
+        {% endif %}
+        {% if data.address %}
+        <div class="d-flex"><h4>address</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.address }}</p></div>
+        {% endif %}
+        </div>
+        <div class="col-4">
+        {% if data.education is '1' %}
+        <div class="d-flex"><h4>education</h4>:&nbsp;<p class="border border-secondary px-2">low</p></div>
+        {% else %}
+        <div class="d-flex"><h4>education</h4>:&nbsp;<p class="border border-secondary px-2">high</p></div>
+        {% endif %}
+        {% if data.field %}
+        <div class="d-flex"><h4>field</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.field }}</p></div>
+        {% endif %}
+        {% if data.university %}
+        <div class="d-flex"><h4>university</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.university }}</p></div>
+        {% endif %}
+        {% if data.religousEducation %}
+        <div class="d-flex"><h4>religousEducation</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.religousEducation }}</p></div>
+        {% endif %}
+        {% if data.englishLanguage == 1 %}
+        <div class="d-flex"><h4>englishLanguage</h4>:&nbsp;<p class="border border-secondary px-2">elementry</p></div>
+        {% elif data.englishLanguage == 2 %}
+        <div class="d-flex"><h4>englishLanguage</h4>:&nbsp;<p class="border border-secondary px-2">intermediate</p></div>
+        {% else %}
+        <div class="d-flex"><h4>englishLanguage</h4>:&nbsp;<p class="border border-secondary px-2">professional</p></div>
+        {% endif %}
+        {% if data.arabicLanguage == 1 %}
+        <div class="d-flex"><h4>arabicLanguage</h4>:&nbsp;<p class="border border-secondary px-2">elementry</p></div>
+        {% elif data.arabicLanguage == 2 %}
+        <div class="d-flex"><h4>arabicLanguage</h4>:&nbsp;<p class="border border-secondary px-2">intermediate</p></div>
+        {% else %}
+        <div class="d-flex"><h4>arabicLanguage</h4>:&nbsp;<p class="border border-secondary px-2">professional</p></div>
+        {% endif %}
+        </div>
+        <div class="col-4">
+        {% if data.education is '1' %}
+        <div class="d-flex"><h4>education</h4>:&nbsp;<p class="border border-secondary px-2">low</p></div>
+        {% else %}
+        <div class="d-flex"><h4>education</h4>:&nbsp;<p class="border border-secondary px-2">high</p></div>
+        {% endif %}
+        {% if data.defective %}
+        <div class="d-flex"><h4>defective</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.defective }}</p></div>
+        {% endif %}
+        {% if data.disease %}
+        <div class="d-flex"><h4>disease</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.disease }}</p></div>
+        {% endif %}
+        {% if data.drugs %}
+        <div class="d-flex"><h4>drugs</h4>:&nbsp;<p class="border border-secondary px-2">{{ data.drugs }}</p></div>
+        {% endif %}
+        </div>
+    </div>
+    </div>
 
 
 {% endif %}

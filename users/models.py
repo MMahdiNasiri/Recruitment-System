@@ -108,7 +108,7 @@ class Information(models.Model):
     education = models.CharField(max_length=1)
     field = models.CharField(max_length=20, blank=True)
     university = models.CharField(max_length=20, blank=True)
-    studentNumber = models.CharField(max_length=1)
+    studentNumber = models.CharField(max_length=9)
     religousEducation = models.CharField(max_length=20)
     englishLanguage = models.IntegerField(default=0)
     arabicLanguage = models.IntegerField(default=0)

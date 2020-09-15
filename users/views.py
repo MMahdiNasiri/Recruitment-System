@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from formtools.wizard.views import SessionWizardView
 from django.contrib.auth.decorators import login_required, user_passes_test
+import random
+
 
 from .backends import PasswordlessAuthBackend
 from .forms import MainForm, FormStepOne, FormStepTwo, FormStepThree
@@ -36,7 +38,6 @@ def logout_view(request):
     return redirect('blog-home')
 
 
-
 INFORMATION_WIZARD_FORMS = (
     ("FormStepOne", FormStepOne),
     ("FormStepTwo", FormStepTwo),
@@ -48,6 +49,7 @@ class FormWizardView(UserPassesTestMixin, SessionWizardView):
     template_name = "users/wizardform.html"
     instance = None
     redirect_field_name = 'users/done.html'
+    initial = {}
 
     def test_func(self):
         print('test_func')
@@ -60,7 +62,6 @@ class FormWizardView(UserPassesTestMixin, SessionWizardView):
         return redirect("users-done")
 
     def get_form_instance(self, step):
-        print('instance')
         if self.instance is None:
             self.instance = Information(user=self.request.user)
         return self.instance
@@ -72,25 +73,55 @@ class FormWizardView(UserPassesTestMixin, SessionWizardView):
         user.setcomplete(True)
         user.save()
         project.save()
-
-        return render(self.request, 'blog/home.html', {
-            'form_data': [form.cleaned_data for form in form_list],
+        user_information = Information.objects.get(user=user)
+        rand = random.random()
+        rand *= 100000
+        rand = round(rand)
+        return render(self.request, 'users/done.html', {
+            'data': user_information,
+            'random': rand
         })
 
     def get_form_initial(self, step):
-        print('get_form_initial')
-        initial = {}
-        userinformation = Information.objects.get(user=self.request.user)
-        initial.update(userinformation.__dict__)
-        return self.initial_dict.get(step, initial)
+        initial = self.initial
+        try:
+            userinformation = Information.objects.get(user=self.request.user)
+            initial.update(userinformation.__dict__)
+            return self.initial_dict.get(step, initial)
+        except ObjectDoesNotExist:
+            return self.initial_dict.get(step, {})
 
+    def post(self, *args, **kwargs):
+        print('def post')
+        step = self.steps.current
+        print(step)
+        form = self.get_form(data=self.request.POST, files=self.request.FILES)
 
-    def process_step(self, form):
-        project = self.instance
-        project.save()
-        return self.get_form_step_data(form)
+        if form.is_valid():
+            if step == 'FormStepOne':
+                project = self.instance
+                project.save()
+            elif step == 'FormStepTwo':
+                userinformation = Information.objects.filter(user=self.request.user)
+                education = form.cleaned_data['education']
+                field = form.cleaned_data['field']
+                university = form.cleaned_data['university']
+                studentNumber = form.cleaned_data['studentNumber']
+                religousEducation = form.cleaned_data['religousEducation']
+                englishLanguage = form.cleaned_data['englishLanguage']
+                arabicLanguage = form.cleaned_data['arabicLanguage']
 
+                userinformation.update(education=education)
+                userinformation.update(field=field)
+                userinformation.update(university=university)
+                userinformation.update(studentNumber=studentNumber)
+                userinformation.update(religousEducation=religousEducation)
+                userinformation.update(englishLanguage=englishLanguage)
+                userinformation.update(arabicLanguage=arabicLanguage)
+
+        return super(FormWizardView, self).post(*args, **kwargs)
 
 
 def done(request):
-    return render(request, 'users/done.html', {})
+    user_information = Information.objects.get(user=request.user)
+    return render(request, 'users/done.html', {'data': user_information})
