@@ -1,6 +1,6 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core import paginator
+from django.http import JsonResponse, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
@@ -10,7 +10,6 @@ from formtools.wizard.views import SessionWizardView
 from django.contrib.auth.decorators import login_required, user_passes_test
 import random
 
-
 from .backends import PasswordlessAuthBackend
 from .forms import MainForm, FormStepOne, FormStepTwo, FormStepThree
 from .models import Information
@@ -19,7 +18,6 @@ from .models import Information
 def login_view(request):
     if request.method == 'POST':
         form = MainForm(request.POST)
-        print('request post')
         if form.is_valid():
             national_code = form.cleaned_data.get("national_code")
             user = PasswordlessAuthBackend().authenticate(national_code=national_code)
@@ -41,39 +39,48 @@ def logout_view(request):
 
 
 
+# @login_required()
+# def form_wizard(request):
+#     if request.is_ajax():
+#         print('is_ajax')
+#         request.readline()
+#     return HttpResponse("just please")
+
+
 
 @login_required()
 def form_wizard(request):
     user = request.user
+    # print(request)
     try:
         user_information = Information.objects.get(user=user)
     except ObjectDoesNotExist:
         user_information = Information.objects.create(user=user)
 
-    if request.method == 'GET':
-        form1 = FormStepOne(instance=user)
-        context = {
-            'form': form1
-        }
-    #
-    # if request.method == 'POST':
-    #
-    #     if 'firstName' in request.POST :
-    #         print('1')
-    #         form1 = FormStepOne(request.POST, instance=user)
-    #         context = {
-    #             'form': form1
-    #         }
-        # elif page == 2:
-        #     form2 = FormStepTwo(request.POST, instance=user)
-        #     context = {
-        #         'form': form2
-        #     }
-        # elif page == 3:
-        #     form3 = FormStepThree(request.POST, instance=user)
-        #     context = {
-        #         'form': form3
-        #     }
+    if request.is_ajax():
+        print('is ajax')
+        request.readline()
+        return HttpResponse("just please")
+
+    if request.method == 'POST':
+        print("11111")
+        # form1 = FormStepOne(request.POST, instance=user_information)
+        # form2 = FormStepTwo(request.POST, instance=user_information)
+        # form3 = FormStepThree(request.POST, instance=user_information)
+        # form1.save()
+        # form2.save()
+        # form3.save()
+    else:
+        form1 = FormStepOne(instance=user_information)
+        form2 = FormStepTwo(instance=user_information)
+        form3 = FormStepThree(instance=user_information)
+
+    context = {
+        'form1': form1,
+        'form2': form2,
+        'form3': form3
+    }
+
     return render(request, 'users/wizardform.html', context)
 
 
