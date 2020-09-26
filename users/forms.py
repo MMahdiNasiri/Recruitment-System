@@ -17,10 +17,10 @@ class FormStepOne(forms.ModelForm):
     phone_regex = RegexValidator(regex=r'^\0?1?\d{10,11}$',
                                  message="Phone number must be entered in the format: '0999999999'")
 
-    firstName = forms.CharField(max_length=15)
-    lastName = forms.CharField(max_length=20)
+    firstName = forms.CharField(max_length=15, required=False)
+    lastName = forms.CharField(max_length=20, required=False)
     birthPlace = forms.CharField(max_length=15, required=False)
-    gender = forms.TypedChoiceField(choices=GENDER_CHOICES)
+    gender = forms.TypedChoiceField(choices=GENDER_CHOICES, required=False)
     phone_number = forms.CharField(validators=[phone_regex], max_length=17, required=False)
     email = forms.EmailField(max_length=25, required=False)
     province = forms.CharField(max_length=18, required=False)

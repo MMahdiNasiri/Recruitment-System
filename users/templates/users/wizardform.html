@@ -3,19 +3,22 @@
 {% load static %}
 
 {% block content %}
-<form name="myForm" id="regForm" method="post">
+<div id="regForm">
 <!-- One "tab" for each step in the form: -->
-<div class="tab" id="form1">
+<form name="myForm" class="tab" id="form1" method="post">
+  {% csrf_token %}
   {{ form1.as_p }}
-</div>
+</form>
 
-<div class="tab" id="form2">
+<form class="tab" id="form2" method="post">
+  {% csrf_token %}
   {{form2.as_p}}
-</div>
+</form>
 
-<div class="tab" id="form3">
+<form class="tab" id="form3" method="post">
+  {% csrf_token %}
   {{form3.as_p}}
-</div>
+</form>
 
 <div style="overflow:auto;">
   <div style="float:right;">
@@ -30,6 +33,6 @@
   <span class="step"></span>
   <span class="step"></span>
 </div>
-</form>
+</div>
 <script src="{% static 'users/app.js' %}"></script>
 {% endblock %}

@@ -25,10 +25,8 @@ function nextPrev(n) {
   console.log(x[currentTab]);
   if(n == 1){
     if (!validateForm(currentTab)) return false;
-    saveForm(page)
-    console.log('in this shit')
+    saveForm(page);
   }
-  console.log('out of if')
   x[currentTab].style.display = "none";
   currentTab = currentTab + n;
   page = page + n;
@@ -75,23 +73,67 @@ function fixStepIndicator(n) {
 function saveForm(page){
     switch(page){
         case 0:
-            myForm = document.getElementById('form1');
+            firstName = document.getElementById('id_firstName').value;
+            lastName = document.getElementById('id_lastName').value;
+            birthPlace = document.getElementById('id_birthPlace').value;
+            gender = document.getElementById('id_gender').value;
+            phone_number = document.getElementById('id_phone_number').value;
+            email = document.getElementById('id_email').value;
+            province = document.getElementById('id_province').value;
+            city = document.getElementById('id_city').value;
+            address = document.getElementById('id_address').value;
+            data = {
+                "firstName": firstName,
+                "lastName": lastName,
+                "birthPlace": birthPlace,
+                "gender": gender,
+                "phone_number": phone_number,
+                "email": email,
+                "province": province,
+                "city": city,
+                "address": address
+            }
             break;
         case 1:
-            myForm = document.getElementById('form2');
+            data = document.getElementById('form2');
             break;
         case 2:
-            myForm = document.getElementById('form3');
+            data = document.getElementById('form3');
             break;
     }
 
     request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
 
-    request.open('POST', '', true);
-    request.setRequestHeader('csrfmiddlewaretoken', '{% csrf_token %}');
+       }
+    };
+
+    request.open('POST', 'save', true);
+    const csrftoken = getCookie('csrftoken');
+    request.setRequestHeader('X-CSRFToken', csrftoken);
+    request.setRequestHeader('page', page)
+
 //    request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 //    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
-    request.send(myForm);
+    request.send(data);
     return 0;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }

@@ -8,4 +8,5 @@ urlpatterns = [
     # path('information/', login_required(views.FormWizardView.as_view(views.INFORMATION_WIZARD_FORMS)), name='users-information'),
     path('done/', views.done, name='users-done'),
     path('form/', views.form_wizard, name='users-information'),
+    path('form/save', views.save_form, name='users-information-save'),
 ]

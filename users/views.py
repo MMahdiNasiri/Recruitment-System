@@ -38,42 +38,17 @@ def logout_view(request):
     return redirect('blog-home')
 
 
-
-# @login_required()
-# def form_wizard(request):
-#     if request.is_ajax():
-#         print('is_ajax')
-#         request.readline()
-#     return HttpResponse("just please")
-
-
-
 @login_required()
 def form_wizard(request):
     user = request.user
-    # print(request)
     try:
         user_information = Information.objects.get(user=user)
     except ObjectDoesNotExist:
         user_information = Information.objects.create(user=user)
 
-    if request.is_ajax():
-        print('is ajax')
-        request.readline()
-        return HttpResponse("just please")
-
-    if request.method == 'POST':
-        print("11111")
-        # form1 = FormStepOne(request.POST, instance=user_information)
-        # form2 = FormStepTwo(request.POST, instance=user_information)
-        # form3 = FormStepThree(request.POST, instance=user_information)
-        # form1.save()
-        # form2.save()
-        # form3.save()
-    else:
-        form1 = FormStepOne(instance=user_information)
-        form2 = FormStepTwo(instance=user_information)
-        form3 = FormStepThree(instance=user_information)
+    form1 = FormStepOne(instance=user_information)
+    form2 = FormStepTwo(instance=user_information)
+    form3 = FormStepThree(instance=user_information)
 
     context = {
         'form1': form1,
@@ -171,6 +146,15 @@ def form_wizard(request):
 #                 userinformation.update(arabicLanguage=arabicLanguage)
 #
 #         return super(FormWizardView, self).post(*args, **kwargs)
+
+def save_form(request):
+    user = request.user
+    user_information = Information.objects.get(user=user)
+    page = request.headers['page']
+    print('1')
+    if page == '0':
+        print(request.POST.get('firstName'))
+    return HttpResponse('just please')
 
 
 def done(request):
