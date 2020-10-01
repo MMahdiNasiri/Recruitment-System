@@ -1,14 +1,12 @@
 from django.contrib.auth import login, logout
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.decorators import method_decorator
-from formtools.wizard.views import SessionWizardView
 from django.contrib.auth.decorators import login_required, user_passes_test
 import random
+import json
 
 from .backends import PasswordlessAuthBackend
 from .forms import MainForm, FormStepOne, FormStepTwo, FormStepThree
@@ -38,7 +36,7 @@ def logout_view(request):
     return redirect('blog-home')
 
 
-@login_required()
+@user_passes_test(lambda u: not u.is_complete, login_url='users-done')
 def form_wizard(request):
     user = request.user
     try:
@@ -57,7 +55,6 @@ def form_wizard(request):
     }
 
     return render(request, 'users/wizardform.html', context)
-
 
     # INFORMATION_WIZARD_FORMS = (
     #     ("FormStepOne", form1),
@@ -149,14 +146,47 @@ def form_wizard(request):
 
 def save_form(request):
     user = request.user
-    user_information = Information.objects.get(user=user)
+    print('in save view')
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
     page = request.headers['page']
-    print('1')
+
+    userinformation = Information.objects.filter(user=user)
     if page == '0':
-        print(request.POST.get('firstName'))
+        userinformation.update(firstName=body['firstName'])
+        userinformation.update(lastName=body['lastName'])
+        userinformation.update(birthPlace=body['birthPlace'])
+        userinformation.update(gender=body['gender'])
+        userinformation.update(phone_number=body['phone_number'])
+        userinformation.update(email=body['email'])
+        userinformation.update(province=body['province'])
+        userinformation.update(city=body['city'])
+        userinformation.update(address=body['address'])
+
+    elif page == '1':
+        userinformation.update(education=body['education'])
+        userinformation.update(field=body['field'])
+        userinformation.update(university=body['university'])
+        userinformation.update(studentNumber=body['studentNumber'])
+        userinformation.update(religousEducation=body['religousEducation'])
+        userinformation.update(englishLanguage=body['englishLanguage'])
+        userinformation.update(arabicLanguage=body['arabicLanguage'])
+    elif page == '2':
+        print('last page')
+        userinformation.update(fisically=body['fisically'])
+        userinformation.update(defective=body['defective'])
+        userinformation.update(disease=body['disease'])
+        userinformation.update(drugs=body['drugs'])
+        user.setcomplete(True)
+        user.save()
+        redirect('users-done')
+
     return HttpResponse('just please')
 
 
+
+
+@login_required()
 def done(request):
     user_information = Information.objects.get(user=request.user)
     return render(request, 'users/done.html', {'data': user_information})
