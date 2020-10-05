@@ -35,8 +35,8 @@ class FormStepOne(forms.ModelForm):
 
 class FormStepTwo(forms.ModelForm):
     student_regex = RegexValidator(regex=r'\d{9}$', message="studentcode must be 9 number")
-    EDUCATION_CHOICES = [(1, 'زیر دیپلم'), (2, 'دیپلم'), (3, 'بالاتراز دیپلم')]
-    LANGUAGE_CHOICES = [(1, 'کم'), (2, 'متوسط'), (3, 'زیاد')]
+    EDUCATION_CHOICES = [(1, 'Undergraduate'), (2, 'Diploma'), (3, 'Doctorate')]
+    LANGUAGE_CHOICES = [(1, 'Elementary'), (2, 'Intermediate'), (3, 'Advance')]
 
     education = forms.TypedChoiceField(choices=EDUCATION_CHOICES)
     field = forms.CharField(max_length=20, required=False)
@@ -53,7 +53,7 @@ class FormStepTwo(forms.ModelForm):
 
 
 class FormStepThree(forms.ModelForm):
-    fisically = forms.TypedChoiceField(choices=[(0, 'معلول'), (1, 'سالم')])
+    fisically = forms.TypedChoiceField(choices=[(0, 'unhealthy'), (1, 'healthy')])
     defective = forms.CharField(max_length=40, required=False)
     disease = forms.CharField(max_length=15, required=False)
     drugs = forms.CharField(max_length=15, required=False)
